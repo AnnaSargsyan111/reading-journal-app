@@ -1,10 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
+import type { DragEvent } from "react";
 import type { Book, ReadingStatus } from "../../types/book";
 
 interface BookCardProps {
   book: Book;
   onDelete: (book: Book) => void;
+  draggable?: boolean;
+  isDragging?: boolean;
+  isDropTarget?: boolean;
+  onDragStart?: (e: DragEvent<HTMLDivElement>) => void;
+  onDragEnter?: (e: DragEvent<HTMLDivElement>) => void;
+  onDragOver?: (e: DragEvent<HTMLDivElement>) => void;
+  onDrop?: (e: DragEvent<HTMLDivElement>) => void;
+  onDragEnd?: (e: DragEvent<HTMLDivElement>) => void;
 }
 
 const STATUS_COLORS: Record<ReadingStatus, { color: string; bg: string }> = {
@@ -14,20 +23,38 @@ const STATUS_COLORS: Record<ReadingStatus, { color: string; bg: string }> = {
   didNotFinish: { color: "var(--gray-400)", bg: "var(--ivory-100)" },
 };
 
-export function BookCard({ book, onDelete }: BookCardProps) {
+export function BookCard({
+  book,
+  onDelete,
+  draggable,
+  isDragging,
+  isDropTarget,
+  onDragStart,
+  onDragEnter,
+  onDragOver,
+  onDrop,
+  onDragEnd,
+}: BookCardProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <div
+      draggable={draggable}
+      onDragStart={onDragStart}
+      onDragEnter={onDragEnter}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      onDragEnd={onDragEnd}
       style={{
-        border: "1px solid var(--border)",
+        border: isDropTarget ? "1.5px solid var(--forest-800)" : "1px solid var(--border)",
         borderRadius: 14,
         overflow: "hidden",
         background: "var(--surface)",
-        cursor: "pointer",
+        cursor: draggable ? "grab" : "pointer",
         display: "flex",
         flexDirection: "column",
+        opacity: isDragging ? 0.5 : 1,
       }}
       onClick={() => navigate(`/dashboard/books/${book.id}`)}
     >

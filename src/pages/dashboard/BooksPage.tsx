@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { deleteBook, listBooks } from "../../lib/bookStore";
+import { deleteBook, listBooks, reorderBooks } from "../../lib/bookStore";
 import { GENRES } from "../../lib/genres";
 import type { Book, ReadingStatus } from "../../types/book";
 import { BookCard } from "./BookCard";
@@ -37,6 +37,8 @@ export function BooksPage() {
   const filterRef = useRef<HTMLDivElement>(null);
   const [sortOpen, setSortOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [dragOverId, setDragOverId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!filterOpen && !sortOpen) return;
@@ -123,11 +125,53 @@ export function BooksPage() {
   const activeFilterCount = statusFilter.length + genreFilter.length + (minRating !== null ? 1 : 0);
   const hasActiveFilters = activeFilterCount > 0;
 
+  // Manual drag-to-reorder only makes sense against the unfiltered, unsorted
+  // "Recently Added" list — in every other view, filteredBooks order/subset
+  // wouldn't correspond to a sensible position in the underlying library order.
+  const canReorder = !isSearching && !hasActiveFilters && sortOption === "recent";
+
   const handleConfirmDelete = () => {
     if (!pendingDelete) return;
     deleteBook(user.id, pendingDelete.id);
     setPendingDelete(null);
     setRefreshKey((k) => k + 1);
+  };
+
+  const handleCardDragStart = (id: string) => (e: DragEvent<HTMLDivElement>) => {
+    setDraggedId(id);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleCardDragEnter = (id: string) => () => {
+    if (!draggedId || draggedId === id) return;
+    setDragOverId(id);
+  };
+
+  const handleCardDragOver = (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+  };
+
+  const handleCardDrop = (targetId: string) => (e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const sourceId = draggedId;
+    setDraggedId(null);
+    setDragOverId(null);
+    if (!sourceId || sourceId === targetId) return;
+
+    const ids = allBooks.map((b) => b.id);
+    const fromIndex = ids.indexOf(sourceId);
+    const toIndex = ids.indexOf(targetId);
+    if (fromIndex === -1 || toIndex === -1) return;
+    ids.splice(fromIndex, 1);
+    ids.splice(toIndex, 0, sourceId);
+
+    reorderBooks(user.id, ids);
+    setRefreshKey((k) => k + 1);
+  };
+
+  const handleCardDragEnd = () => {
+    setDraggedId(null);
+    setDragOverId(null);
   };
 
   const handleCloseWelcome = () => {
@@ -409,7 +453,19 @@ export function BooksPage() {
               }}
             >
               {filteredBooks.map((book) => (
-                <BookCard key={book.id} book={book} onDelete={setPendingDelete} />
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  onDelete={setPendingDelete}
+                  draggable={canReorder}
+                  isDragging={draggedId === book.id}
+                  isDropTarget={canReorder && dragOverId === book.id}
+                  onDragStart={handleCardDragStart(book.id)}
+                  onDragEnter={handleCardDragEnter(book.id)}
+                  onDragOver={handleCardDragOver}
+                  onDrop={handleCardDrop(book.id)}
+                  onDragEnd={handleCardDragEnd}
+                />
               ))}
             </div>
           )}
