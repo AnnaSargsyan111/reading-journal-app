@@ -1,0 +1,374 @@
+{
+  "common": {
+    "appName": "Reading Journal",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "close": "Close",
+    "save": "Save",
+    "required": "This field is required",
+    "edit": "Edit",
+    "back": "Back",
+    "backToLogin": "Back to Login",
+    "or": "or",
+    "and": "and",
+    "genericError": "We are having problems: Please try again"
+  },
+  "auth": {
+    "registration": {
+      "title": "Create your account",
+      "subtitle": "Start your personal reading journal.",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Create Account",
+      "haveAccount": "Already have an account?",
+      "login": "Log In",
+      "errors": {
+        "latinOnly": "Use Latin letters",
+        "invalidEmail": "Enter a valid email address",
+        "emailTaken": "An account with this email already exists"
+      }
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to your reading journal.",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Log In",
+      "forgotPassword": "Forgot password?",
+      "noAccount": "Don't have an account?",
+      "register": "Create one",
+      "errors": {
+        "invalidEmail": "Enter a valid email address",
+        "incorrectCredentials": "Incorrect email address or password"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot your password?",
+      "subtitle": "Enter your email and we'll send you a reset link.",
+      "email": "Email",
+      "submit": "Send Reset Link",
+      "sentTitle": "Check your email",
+      "sentSubtitle": "If an account exists for this email, a reset link has been sent.",
+      "devContinue": "Continue to Reset Password (dev preview)",
+      "errors": {
+        "invalidEmail": "Enter a valid email address"
+      }
+    },
+    "resetPassword": {
+      "title": "Reset your password",
+      "subtitle": "Choose a new password for your account.",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Reset Password",
+      "success": "Your password has been reset. You can now log in.",
+      "invalidLink": "This reset link is invalid or has expired.",
+      "errors": {
+        "mismatch": "Passwords do not match"
+      }
+    },
+    "password": {
+      "requirementsTitle": "Password must contain:",
+      "minLength": "At least 8 characters",
+      "maxLength": "No more than 32 characters",
+      "hasUppercase": "At least 1 uppercase letter",
+      "hasNumber": "At least 1 number",
+      "hasSpecialChar": "At least 1 special character"
+    }
+  },
+  "onboarding": {
+    "title": "Tell Us About Yourself",
+    "subtitle": "This helps us personalize your experience. Genre and Favorite Authors are optional.",
+    "nameLabel": "Name & Surname",
+    "genre": {
+      "label": "Genre",
+      "placeholder": "Select up to 5 genres",
+      "selected": "{{count}} selected",
+      "tooMany": "You can select up to 5 genres"
+    },
+    "favoriteAuthors": {
+      "label": "Favorite Authors",
+      "placeholder": "Type a name and press Enter"
+    },
+    "aboutMe": {
+      "label": "About Me",
+      "placeholder": "Tell us a little about yourself and your reading tastes..."
+    },
+    "continue": "Continue",
+    "savedToast": "Your details saved, continue complete"
+  },
+  "welcomeModal": {
+    "title": "Welcome to your world of books",
+    "cta": "+ Add Your First Book"
+  },
+  "about": {
+    "title": "About Me",
+    "name": "Name",
+    "surname": "Surname",
+    "email": "Email",
+    "genre": "Genre",
+    "favoriteAuthors": "Favorite Authors",
+    "aboutMeText": "About Me",
+    "changePassword": "Change Password",
+    "save": "Save Changes",
+    "saved": "Changes saved",
+    "cannotBeEmpty": "This field cannot be empty",
+    "password": {
+      "changeTitle": "Change Password",
+      "current": "Current Password",
+      "changeSuccess": "Password successfully changed"
+    }
+  },
+  "books": {
+    "addTitle": "Add Book",
+    "editTitle": "Edit Book",
+    "title": "Title",
+    "author": "Author",
+    "readingStatus": "Status",
+    "readingStatusPlaceholder": "Select status",
+    "status": {
+      "wantToRead": "Want to Read",
+      "currentlyReading": "Currently Reading",
+      "read": "Read",
+      "didNotFinish": "Did Not Finish"
+    },
+    "rating": "Rating",
+    "ratingHint": "Available once status is \"Read\"",
+    "genre": "Genre",
+    "genrePlaceholder": "Select genre",
+    "plotNotes": "Plot / My Notes",
+    "aiSummary": "AI Summary",
+    "aiSummaryUpsell": "Available on the paid plan",
+    "characters": "Characters",
+    "charactersPlaceholder": "Type a character name and press Enter",
+    "quotes": "Quotes",
+    "quoteText": "Quote",
+    "quotePage": "Page",
+    "addQuote": "+ Add Quote",
+    "removeQuote": "Remove quote",
+    "commentary": "Commentary",
+    "photo": "Photo",
+    "uploadPhoto": "Upload photo",
+    "removePhoto": "Remove photo",
+    "cancel": "Cancel",
+    "save": "Save Book",
+    "delete": "Delete",
+    "deleteConfirmTitle": "Delete \"{{title}}\"?",
+    "deleteConfirmBody": "If deleted, the book will be removed from the list",
+    "searchPlaceholder": "Search by title or author",
+    "clearSearch": "Clear search",
+    "filterButton": "Filter",
+    "filterStatus": "Status",
+    "filterGenre": "Genre",
+    "filterRating": "Rating",
+    "anyRating": "Any rating",
+    "ratingAndUp": "{{count}}★ and up",
+    "clearFilters": "Clear Filters",
+    "noResultsTitle": "No books found",
+    "noResultsSubtitle": "Try a different search or adjust your filters",
+    "resetSearch": "Reset",
+    "sortLabel": "Sort",
+    "sort": {
+      "recent": "Recently Added",
+      "titleAsc": "Title: A–Z",
+      "titleDesc": "Title: Z–A",
+      "ratingHigh": "Rating: High → Low",
+      "ratingLow": "Rating: Low → High"
+    },
+    "errors": {
+      "titleRequired": "Title is required",
+      "authorRequired": "Author is required",
+      "statusRequired": "Status is required",
+      "ratingRequired": "Rating is required when status is Read"
+    }
+  },
+  "mysteryBook": {
+    "entryTitle": "Mystery Book",
+    "entrySubtitle": "Let us pick your next read based on your mood and taste.",
+    "entryCta": "Find My Mystery",
+    "mood": {
+      "title": "What are you in the mood for?",
+      "subtitle": "Pick up to 2 moods.",
+      "error": "Choose at least one mood.",
+      "options": {
+        "magical": "Magical",
+        "cozy": "Cozy",
+        "escapist": "Escapist",
+        "emotional": "Emotional",
+        "intense": "Gripping",
+        "lightFun": "Lighthearted",
+        "thoughtProvoking": "Thought-provoking",
+        "mysterious": "Mysterious"
+      },
+      "meanings": {
+        "magical": "I want wonder, imagination, and something extraordinary.",
+        "cozy": "I want something warm, comforting, and easy to sink into.",
+        "escapist": "I want to forget everyday life and get lost in another world.",
+        "emotional": "I want a story that makes me feel deeply and emotionally.",
+        "intense": "I want something that pulls me in and keeps me turning the pages.",
+        "lightFun": "I want something fun, uplifting, and easy to enjoy.",
+        "thoughtProvoking": "I want something that challenges my ideas or makes me see things differently.",
+        "mysterious": "I want secrets, suspense, unexpected discoveries, and twists."
+      }
+    },
+    "genre": {
+      "title": "What kind of books do you enjoy?",
+      "subtitle": "Pick up to 3.",
+      "skip": "Skip",
+      "error": "Choose at least one genre.",
+      "options": {
+        "fantasy": "Fantasy",
+        "romance": "Romance",
+        "mysteryThriller": "Mystery & Thriller",
+        "scienceFiction": "Science Fiction",
+        "literaryFiction": "Literary Fiction",
+        "historicalFiction": "Historical Fiction",
+        "horror": "Horror",
+        "adventure": "Adventure",
+        "biography": "Biography",
+        "selfDevelopment": "Self-Development",
+        "youngAdult": "Young Adult",
+        "nonFiction": "Non-fiction"
+      }
+    },
+    "experience": {
+      "title": "What do you want from your next read?",
+      "subtitle": "Choose what you want to feel or experience.",
+      "skip": "Skip",
+      "options": {
+        "escapeMe": { "label": "Escape Me", "description": "Take me somewhere else." },
+        "makeMeFeel": { "label": "Make Me Feel", "description": "Give me an emotional experience." },
+        "keepMeHooked": { "label": "Keep Me Hooked", "description": "Something I won't want to put down." },
+        "makeMeThink": { "label": "Make Me Think", "description": "Challenge my perspective." },
+        "makeMeSmile": { "label": "Make Me Smile", "description": "Something light and enjoyable." },
+        "surpriseMe": { "label": "Surprise Me", "description": "Take me somewhere unexpected." }
+      }
+    },
+    "level": {
+      "title": "How much do you want to know?",
+      "error": "Choose how much you want to know.",
+      "mystery": { "label": "Keep It a Mystery", "description": "Don't show me the book. I want to discover it when it reaches me" },
+      "sneakPeek": { "label": "Show Me Now", "description": "Show me what you picked for me" }
+    },
+    "generating": "Finding your mystery...",
+    "result": {
+      "mysteryHeading": "We found your match.",
+      "mysterySubheading": "We picked a book based on your mood and reading taste.",
+      "matchLabel": "Your Match",
+      "reasoningLabel": "Why this book?",
+      "reasoningTemplate": "You're drawn to {{moods}} stories, and this one delivers exactly that.",
+      "sendMeMystery": "Send Me the Mystery",
+      "teaserHeading": "Your mystery is ready...",
+      "approxLength": "~{{pages}} pages",
+      "revealTitleCta": "Reveal the Title",
+      "revealedReasoningLabel": "Why we picked it",
+      "getThisBook": "Get This Book",
+      "changeBook": "Change Book"
+    },
+    "delivery": {
+      "title": "Delivery Address",
+      "fullName": "Full name",
+      "country": "Country",
+      "city": "City",
+      "streetAddress": "Street address",
+      "buildingApartment": "Building / Apartment",
+      "postalCode": "Postal code",
+      "phoneNumber": "Phone number",
+      "phoneInvalid": "Enter a 6-digit phone number",
+      "deliverTo": "Deliver to",
+      "continueToPayment": "Continue to Payment"
+    },
+    "order": {
+      "mysteryTitle": "Your mystery is ready to ship.",
+      "mysteryBookLine": "Mystery Book",
+      "price": "Price",
+      "deliveryFee": "Delivery fee",
+      "estimatedDelivery": "Estimated delivery",
+      "deliveryAddress": "Delivery address",
+      "bookCover": "Book cover",
+      "placeOrder": "Place Order"
+    },
+    "payment": {
+      "method": "Payment method",
+      "cardLabel": "Card",
+      "cardNumber": "Card number",
+      "cardholderName": "Cardholder name",
+      "expiryDate": "Expiry date",
+      "cvv": "CVV/CVC",
+      "summary": "Order summary",
+      "total": "Total",
+      "deliveryInfo": "Delivery information",
+      "nonReturnable": "I understand the Mystery Book is non-returnable",
+      "placeOrder": "Place Order"
+    },
+    "confirmation": {
+      "mysteryHeading": "Your Mystery is on its way 🎁",
+      "mysterySubheading": "Your book has been carefully selected based on your mood and reading preferences.",
+      "revealedHeading": "Your book is on its way 📚",
+      "statusPreparing": "Preparing",
+      "statusShipped": "Shipped",
+      "statusDelivered": "Delivered",
+      "simulateDelivery": "Simulate delivery (demo)"
+    },
+    "feedback": {
+      "title": "How did we do?",
+      "loved": "Loved it",
+      "okay": "It was okay",
+      "notForMe": "Not for me",
+      "whatDidYouLike": "What did you like about it?",
+      "options": {
+        "genre": "The genre",
+        "story": "The story",
+        "writing": "The writing",
+        "characters": "The characters",
+        "mood": "The mood",
+        "author": "The author"
+      },
+      "submit": "Submit",
+      "thanksTitle": "Thanks for the feedback",
+      "thanksSubtitle": "This helps us pick a better match for your next Mystery Book.",
+      "startAnother": "Find another Mystery"
+    }
+  },
+  "nav": {
+    "aboutMe": "About Me",
+    "books": "Books",
+    "moodRecommendations": "Mood-Based Recommendations",
+    "mysteryBook": "Mystery Book",
+    "logout": "Log Out"
+  },
+  "dashboard": {
+    "comingSoon": "Coming soon.",
+    "books": {
+      "emptyTitle": "Your library is empty",
+      "emptySubtitle": "Add your first book to start building your personal library",
+      "emptyCta": "+ Add Your First Book",
+      "addCta": "+ Add"
+    }
+  },
+  "genres": {
+    "fiction": "Fiction",
+    "literaryFiction": "Literary Fiction",
+    "contemporary": "Contemporary",
+    "crimeMysteryThriller": "Crime, Mystery and Thriller",
+    "scienceFiction": "Science Fiction",
+    "fantasy": "Fantasy",
+    "romance": "Romance",
+    "historicalFiction": "Historical Fiction",
+    "horror": "Horror",
+    "actionAdventure": "Action and Adventure",
+    "youngAdult": "Young Adult",
+    "classics": "Classics",
+    "shortStories": "Short Stories",
+    "graphicNovelComics": "Graphic Novel and Comics",
+    "nonFiction": "Non-Fiction",
+    "biographyMemoir": "Biography and Memoir",
+    "selfImprovement": "Self-Improvement",
+    "businessEconomics": "Business and Economics",
+    "philosophyPsychology": "Philosophy and Psychology",
+    "historyPolitics": "History and Politics",
+    "scienceTechnology": "Science and Technology",
+    "poetry": "Poetry"
+  }
+}
