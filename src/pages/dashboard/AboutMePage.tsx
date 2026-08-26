@@ -42,6 +42,15 @@ export function AboutMePage() {
     }
     if (hasError) return;
 
+    const sameChips = (a: string[], b: string[]) => a.length === b.length && a.every((v, i) => v === b[i]);
+    const noChanges =
+      firstName === user.firstName &&
+      lastName === user.lastName &&
+      aboutMe === (user.aboutMe ?? "") &&
+      sameChips(genres, user.genres ?? []) &&
+      sameChips(favoriteAuthors, user.favoriteAuthors ?? []);
+    if (noChanges) return;
+
     updateProfile(user.id, { firstName, lastName, genres, favoriteAuthors, aboutMe });
     refresh();
     showToast(t("about.saved"));

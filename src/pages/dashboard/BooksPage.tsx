@@ -9,6 +9,7 @@ import { BookCard } from "./BookCard";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { GenreMultiSelect } from "../../components/GenreMultiSelect";
 import { CloseIcon, FilterIcon, SortIcon } from "../../components/icons";
+import { WelcomeModal } from "../onboarding/WelcomeModal";
 
 type SortOption = "recent" | "titleAsc" | "titleDesc" | "ratingHigh" | "ratingLow";
 
@@ -18,10 +19,13 @@ const SORT_OPTIONS: SortOption[] = ["recent", "titleAsc", "titleDesc", "ratingHi
 
 export function BooksPage() {
   const { t } = useTranslation();
-  const { user } = useAuth();
+  const { user, markWelcomeSeen } = useAuth();
   const navigate = useNavigate();
   const [pendingDelete, setPendingDelete] = useState<Book | null>(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  // Shown once, immediately after onboarding lands the user here (Section 8) —
+  // markWelcomeSeen() persists the dismissal so it never shows again.
+  const [showWelcome, setShowWelcome] = useState(() => !user?.onboardingSeenWelcome);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -124,6 +128,17 @@ export function BooksPage() {
     deleteBook(user.id, pendingDelete.id);
     setPendingDelete(null);
     setRefreshKey((k) => k + 1);
+  };
+
+  const handleCloseWelcome = () => {
+    setShowWelcome(false);
+    markWelcomeSeen();
+  };
+
+  const handleAddBookFromWelcome = () => {
+    setShowWelcome(false);
+    markWelcomeSeen();
+    navigate("/dashboard/books/new");
   };
 
   return (
@@ -410,6 +425,8 @@ export function BooksPage() {
           onClose={() => setPendingDelete(null)}
         />
       )}
+
+      {showWelcome && <WelcomeModal onClose={handleCloseWelcome} onAddBook={handleAddBookFromWelcome} />}
     </div>
   );
 }

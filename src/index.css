@@ -216,6 +216,7 @@ button {
 
 .form-field__input,
 .form-field__textarea {
+  width: 100%;
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 11px 14px;

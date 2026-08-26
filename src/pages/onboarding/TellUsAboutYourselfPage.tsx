@@ -6,11 +6,10 @@ import { GenreMultiSelect } from "../../components/GenreMultiSelect";
 import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 import { useAuth } from "../../context/AuthContext";
 import { useToast } from "../../context/ToastContext";
-import { WelcomeModal } from "./WelcomeModal";
 
 export function TellUsAboutYourselfPage() {
   const { t } = useTranslation();
-  const { user, completeOnboarding, markWelcomeSeen } = useAuth();
+  const { user, completeOnboarding } = useAuth();
   const { showToast } = useToast();
   const navigate = useNavigate();
 
@@ -18,10 +17,11 @@ export function TellUsAboutYourselfPage() {
   const [favoriteAuthors, setFavoriteAuthors] = useState<string[]>([]);
   const [aboutMe, setAboutMe] = useState("");
   const [aboutMeError, setAboutMeError] = useState("");
-  const [showWelcome, setShowWelcome] = useState(false);
 
   if (!user) return null;
 
+  // The Welcome Modal (Section 8) is shown on the Books page itself, not here —
+  // it renders once the user actually lands where the modal's own CTA sends them.
   const handleContinue = () => {
     if (!aboutMe.trim()) {
       setAboutMeError("common.required");
@@ -30,11 +30,6 @@ export function TellUsAboutYourselfPage() {
     setAboutMeError("");
     completeOnboarding({ genres, favoriteAuthors, aboutMe });
     showToast(t("onboarding.savedToast"));
-    setShowWelcome(true);
-  };
-
-  const handleDismissWelcome = () => {
-    markWelcomeSeen();
     navigate("/dashboard/books");
   };
 
@@ -94,8 +89,6 @@ export function TellUsAboutYourselfPage() {
           </button>
         </div>
       </div>
-
-      {showWelcome && <WelcomeModal onDismiss={handleDismissWelcome} />}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
 import { updateProfile } from "../../lib/authStore";
 import { generateRecommendation, generateRecommendationOptions, needsGenreStep } from "../../lib/mysteryEngine";
+import { isLatinName } from "../../lib/validation";
 import {
   createMysteryOrder,
   listMysteryOrders,
@@ -58,7 +59,7 @@ const EXPERIENCES: ExperienceId[] = [
 const FEEDBACK_TAGS = ["genre", "story", "writing", "characters", "mood", "author"];
 
 const MYSTERY_PRICE_AMD = 12000;
-const DELIVERY_FEE_AMD = 1500;
+const DELIVERY_FEE_AMD = 500;
 
 type Step =
   | "entry"
@@ -89,6 +90,31 @@ const emptyAddress: DeliveryAddress = {
 
 function formatAmd(amount: number): string {
   return `${amount.toLocaleString()} ֏`;
+}
+
+// Formats raw digits as they're typed into "MM/YY" (e.g. "1228" -> "12/28").
+function formatExpiryInput(raw: string): string {
+  const digits = raw.replace(/\D/g, "").slice(0, 4);
+  return digits.length > 2 ? `${digits.slice(0, 2)}/${digits.slice(2)}` : digits;
+}
+
+// Parses "MM/YY" into a {month, year} pair, or null if the format itself is
+// invalid (wrong length or month out of 01–12) — expiry-in-the-past is a
+// separate, later check so the two can carry distinct error messages.
+function parseExpiry(value: string): { month: number; year: number } | null {
+  const digits = value.replace(/\D/g, "");
+  if (digits.length !== 4) return null;
+  const month = Number(digits.slice(0, 2));
+  const year = Number(digits.slice(2, 4));
+  if (month < 1 || month > 12) return null;
+  return { month, year };
+}
+
+function isExpiryInPast(month: number, year: number): boolean {
+  const now = new Date();
+  const currentYear = now.getFullYear() % 100;
+  const currentMonth = now.getMonth() + 1;
+  return year < currentYear || (year === currentYear && month < currentMonth);
 }
 
 // Natural-language list join: "a", "a and b", "a, b and c" — never "&" or a stray period.
@@ -134,6 +160,17 @@ export function MysteryBookPage() {
   const [editingAddress, setEditingAddress] = useState(!hasReturningAddress);
   const [nonReturnableChecked, setNonReturnableChecked] = useState(false);
   const [addressErrors, setAddressErrors] = useState<Partial<Record<keyof DeliveryAddress, string>>>({});
+  const [cardNumber, setCardNumber] = useState("");
+  const [cardholderName, setCardholderName] = useState("");
+  const [expiryDate, setExpiryDate] = useState("");
+  const [cvv, setCvv] = useState("");
+  const [paymentErrors, setPaymentErrors] = useState<{
+    cardNumber?: string;
+    cardholderName?: string;
+    expiryDate?: string;
+    cvv?: string;
+    nonReturnable?: string;
+  }>({});
   const [order, setOrder] = useState<MysteryOrderRecord | undefined>();
   const [feedbackChoice, setFeedbackChoice] = useState<MysteryOrderRecord["feedback"]>();
   const [feedbackTags, setFeedbackTags] = useState<string[]>([]);
@@ -258,8 +295,35 @@ export function MysteryBookPage() {
     advance("payment");
   };
 
+  // Stores translation KEYS, not resolved text — resolving here would freeze the
+  // error in whatever language was active at submit time, so it wouldn't update
+  // if the user switches languages afterward while the error is still showing.
   const handlePlaceOrder = () => {
     if (!candidate || !revealMode) return;
+
+    const nextErrors: typeof paymentErrors = {};
+
+    if (!cardNumber.trim()) nextErrors.cardNumber = "common.required";
+    else if (cardNumber.length !== 16) nextErrors.cardNumber = "mysteryBook.payment.cardNumberInvalid";
+
+    if (!cardholderName.trim()) nextErrors.cardholderName = "common.required";
+    else if (!isLatinName(cardholderName)) nextErrors.cardholderName = "auth.registration.errors.latinOnly";
+
+    if (!expiryDate.trim()) {
+      nextErrors.expiryDate = "common.required";
+    } else {
+      const parsed = parseExpiry(expiryDate);
+      if (!parsed) nextErrors.expiryDate = "mysteryBook.payment.expiryInvalid";
+      else if (isExpiryInPast(parsed.month, parsed.year)) nextErrors.expiryDate = "mysteryBook.payment.expiryPast";
+    }
+
+    if (!cvv.trim()) nextErrors.cvv = "common.required";
+    else if (cvv.length !== 3 && cvv.length !== 4) nextErrors.cvv = "mysteryBook.payment.cvvInvalid";
+
+    if (!nonReturnableChecked) nextErrors.nonReturnable = "mysteryBook.payment.agreeRequired";
+    setPaymentErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
     const created = createMysteryOrder(user.id, {
       bookId: candidate.id,
       moods,
@@ -288,6 +352,11 @@ export function MysteryBookPage() {
     setFeedbackChoice(undefined);
     setFeedbackTags([]);
     setNonReturnableChecked(false);
+    setCardNumber("");
+    setCardholderName("");
+    setExpiryDate("");
+    setCvv("");
+    setPaymentErrors({});
     setMoodError("");
     setGenreError("");
     setLevelError("");
@@ -699,31 +768,89 @@ export function MysteryBookPage() {
 
         <div className="form-field">
           <label className="form-field__label">{t("mysteryBook.payment.cardNumber")}</label>
-          <input className="form-field__input" disabled placeholder="0000 0000 0000 0000" />
+          <input
+            className={paymentErrors.cardNumber ? "form-field__input form-field__input--error" : "form-field__input"}
+            placeholder="0000 0000 0000 0000"
+            value={cardNumber}
+            inputMode="numeric"
+            maxLength={16}
+            onChange={(e) => {
+              setCardNumber(e.target.value.replace(/\D/g, "").slice(0, 16));
+              if (paymentErrors.cardNumber) setPaymentErrors((prev) => ({ ...prev, cardNumber: undefined }));
+            }}
+          />
+          {paymentErrors.cardNumber && <p className="form-field__error">{t(paymentErrors.cardNumber)}</p>}
         </div>
 
         <div className="form-field">
           <label className="form-field__label">{t("mysteryBook.payment.cardholderName")}</label>
-          <input className="form-field__input" disabled placeholder={t("mysteryBook.payment.cardholderName")} />
+          <input
+            className={
+              paymentErrors.cardholderName ? "form-field__input form-field__input--error" : "form-field__input"
+            }
+            placeholder={t("mysteryBook.payment.cardholderName")}
+            value={cardholderName}
+            onChange={(e) => {
+              setCardholderName(e.target.value);
+              if (paymentErrors.cardholderName) setPaymentErrors((prev) => ({ ...prev, cardholderName: undefined }));
+            }}
+          />
+          {paymentErrors.cardholderName && <p className="form-field__error">{t(paymentErrors.cardholderName)}</p>}
         </div>
 
         <div style={{ display: "flex", gap: 12 }}>
           <div className="form-field" style={{ flex: 1 }}>
             <label className="form-field__label">{t("mysteryBook.payment.expiryDate")}</label>
-            <input className="form-field__input" disabled placeholder="MM/YY" />
+            <input
+              className={
+                paymentErrors.expiryDate ? "form-field__input form-field__input--error" : "form-field__input"
+              }
+              placeholder="MM/YY"
+              value={expiryDate}
+              inputMode="numeric"
+              maxLength={5}
+              onChange={(e) => {
+                setExpiryDate(formatExpiryInput(e.target.value));
+                if (paymentErrors.expiryDate) setPaymentErrors((prev) => ({ ...prev, expiryDate: undefined }));
+              }}
+            />
+            {paymentErrors.expiryDate && <p className="form-field__error">{t(paymentErrors.expiryDate)}</p>}
           </div>
           <div className="form-field" style={{ flex: 1 }}>
             <label className="form-field__label">{t("mysteryBook.payment.cvv")}</label>
-            <input className="form-field__input" disabled placeholder="CVV" />
+            <input
+              className={paymentErrors.cvv ? "form-field__input form-field__input--error" : "form-field__input"}
+              placeholder="CVV"
+              value={cvv}
+              inputMode="numeric"
+              maxLength={4}
+              onChange={(e) => {
+                setCvv(e.target.value.replace(/\D/g, "").slice(0, 4));
+                if (paymentErrors.cvv) setPaymentErrors((prev) => ({ ...prev, cvv: undefined }));
+              }}
+            />
+            {paymentErrors.cvv && <p className="form-field__error">{t(paymentErrors.cvv)}</p>}
           </div>
         </div>
 
-        <label style={{ display: "flex", gap: 8, alignItems: "flex-start", margin: "16px 0", fontSize: 14 }}>
-          <input type="checkbox" checked={nonReturnableChecked} onChange={(e) => setNonReturnableChecked(e.target.checked)} />
+        <label style={{ display: "flex", gap: 8, alignItems: "flex-start", margin: "16px 0 4px", fontSize: 14 }}>
+          <input
+            type="checkbox"
+            checked={nonReturnableChecked}
+            onChange={(e) => {
+              setNonReturnableChecked(e.target.checked);
+              if (paymentErrors.nonReturnable) setPaymentErrors((prev) => ({ ...prev, nonReturnable: undefined }));
+            }}
+          />
           {t("mysteryBook.payment.nonReturnable")}
         </label>
+        {paymentErrors.nonReturnable && (
+          <p className="form-field__error" style={{ marginTop: 0, marginBottom: 12 }}>
+            {t(paymentErrors.nonReturnable)}
+          </p>
+        )}
 
-        <button type="button" className="btn btn-primary btn-block" disabled={!nonReturnableChecked} onClick={handlePlaceOrder}>
+        <button type="button" className="btn btn-primary btn-block" onClick={handlePlaceOrder}>
           {t("mysteryBook.payment.placeOrder")}
         </button>
       </div>
@@ -737,7 +864,13 @@ export function MysteryBookPage() {
         <h2 style={{ color: "var(--plum-900)", marginBottom: 8 }}>{t("mysteryBook.confirmation.mysteryHeading")}</h2>
         <p style={{ color: "var(--plum-700)", marginBottom: 24 }}>{t("mysteryBook.confirmation.mysterySubheading")}</p>
         <StatusCard t={t} />
-        <button type="button" className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => setStep("feedback")}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          style={{ marginTop: 20 }}
+          title={t("mysteryBook.confirmation.simulateDeliveryHint")}
+          onClick={() => setStep("feedback")}
+        >
           {t("mysteryBook.confirmation.simulateDelivery")}
         </button>
       </div>
@@ -753,7 +886,13 @@ export function MysteryBookPage() {
           {candidate.title} — {candidate.author}
         </p>
         <StatusCard t={t} />
-        <button type="button" className="btn btn-primary" style={{ marginTop: 20 }} onClick={() => setStep("feedback")}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          style={{ marginTop: 20 }}
+          title={t("mysteryBook.confirmation.simulateDeliveryHint")}
+          onClick={() => setStep("feedback")}
+        >
           {t("mysteryBook.confirmation.simulateDelivery")}
         </button>
       </div>
@@ -779,7 +918,13 @@ export function MysteryBookPage() {
 
         {feedbackChoice && (
           <>
-            <p style={{ fontWeight: 600, marginBottom: 12 }}>{t("mysteryBook.feedback.whatDidYouLike")}</p>
+            <p style={{ fontWeight: 600, marginBottom: 12 }}>
+              {t(
+                feedbackChoice === "notForMe"
+                  ? "mysteryBook.feedback.whatDidYouDislike"
+                  : "mysteryBook.feedback.whatDidYouLike",
+              )}
+            </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, justifyContent: "center", marginBottom: 24 }}>
               {FEEDBACK_TAGS.map((tag) => {
                 const selected = feedbackTags.includes(tag);

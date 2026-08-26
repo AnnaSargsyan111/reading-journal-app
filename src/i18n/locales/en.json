@@ -11,7 +11,9 @@
     "backToLogin": "Back to Login",
     "or": "or",
     "and": "and",
-    "genericError": "We are having problems: Please try again"
+    "genericError": "We are having problems: Please try again",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "auth": {
     "registration": {
@@ -79,7 +81,7 @@
   },
   "onboarding": {
     "title": "Tell Us About Yourself",
-    "subtitle": "This helps us personalize your experience. Genre and Favorite Authors are optional.",
+    "subtitle": "This will help us personalize your book preferences",
     "nameLabel": "Name & Surname",
     "genre": {
       "label": "Genre",
@@ -300,6 +302,11 @@
       "total": "Total",
       "deliveryInfo": "Delivery information",
       "nonReturnable": "I understand the Mystery Book is non-returnable",
+      "agreeRequired": "Agree to continue",
+      "cardNumberInvalid": "Card number must be 16 digits",
+      "expiryInvalid": "Enter a valid expiry date (MM/YY)",
+      "expiryPast": "This card has expired",
+      "cvvInvalid": "CVV must be 3 or 4 digits",
       "placeOrder": "Place Order"
     },
     "confirmation": {
@@ -309,14 +316,16 @@
       "statusPreparing": "Preparing",
       "statusShipped": "Shipped",
       "statusDelivered": "Delivered",
-      "simulateDelivery": "Simulate delivery (demo)"
+      "simulateDelivery": "Leave review (demo)",
+      "simulateDeliveryHint": "You can leave a review once the book has been added to the Books page"
     },
     "feedback": {
-      "title": "How did we do?",
+      "title": "How would you rate the book?",
       "loved": "Loved it",
       "okay": "It was okay",
       "notForMe": "Not for me",
       "whatDidYouLike": "What did you like about it?",
+      "whatDidYouDislike": "What didn't you like about it?",
       "options": {
         "genre": "The genre",
         "story": "The story",

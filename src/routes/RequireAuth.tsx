@@ -23,10 +23,7 @@ export function RequireOnboardingNotDone() {
     return <Navigate to="/login" replace />;
   }
 
-  // Stay on the onboarding page through the moment onboarding is completed so the
-  // Welcome Modal (shown by TellUsAboutYourselfPage itself) can render. Only bounce
-  // away once the modal has actually been seen and dismissed.
-  if (user.onboardingCompleted && user.onboardingSeenWelcome) {
+  if (user.onboardingCompleted) {
     return <Navigate to="/dashboard/books" replace />;
   }
 
