@@ -6,6 +6,7 @@ import { GenreMultiSelect } from "../../components/GenreMultiSelect";
 import { StarRating } from "../../components/StarRating";
 import { ConfirmModal } from "../../components/ConfirmModal";
 import { useAuth } from "../../context/AuthContext";
+import { useToast } from "../../context/ToastContext";
 import { createBook, deleteBook, getBook, updateBook } from "../../lib/bookStore";
 import { GENRES } from "../../lib/genres";
 import type { Quote, ReadingStatus } from "../../types/book";
@@ -15,6 +16,7 @@ const STATUS_VALUES: ReadingStatus[] = ["wantToRead", "currentlyReading", "read"
 export function BookFormPage() {
   const { t } = useTranslation();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const { bookId } = useParams();
   const isEditing = Boolean(bookId);
@@ -82,7 +84,26 @@ export function BookFormPage() {
     };
 
     if (isEditing && existing) {
-      updateBook(user.id, existing.id, input);
+      const sameArray = (a: string[], b: string[]) => a.length === b.length && a.every((v, i) => v === b[i]);
+      const sameQuotes = (a: Quote[], b: Quote[]) =>
+        a.length === b.length &&
+        a.every((q, i) => q.id === b[i].id && q.text === b[i].text && (q.page ?? "") === (b[i].page ?? ""));
+      const noChanges =
+        input.title === existing.title &&
+        input.author === existing.author &&
+        input.readingStatus === existing.readingStatus &&
+        (input.rating ?? undefined) === (existing.rating ?? undefined) &&
+        sameArray(input.genres, existing.genres) &&
+        input.plotNotes === existing.plotNotes &&
+        sameArray(input.characters, existing.characters) &&
+        sameQuotes(input.quotes, existing.quotes) &&
+        input.commentary === existing.commentary &&
+        (input.photoDataUrl ?? "") === (existing.photoDataUrl ?? "");
+
+      if (!noChanges) {
+        updateBook(user.id, existing.id, input);
+        showToast(t("books.changesSaved"));
+      }
     } else {
       createBook(user.id, input);
     }
@@ -286,7 +307,7 @@ export function BookFormPage() {
 
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           <button type="button" className="btn btn-primary" onClick={handleSave}>
-            {t("books.save")}
+            {t(isEditing ? "books.saveChanges" : "books.save")}
           </button>
           <button type="button" className="btn btn-secondary" onClick={() => navigate("/dashboard/books")}>
             {t("books.cancel")}

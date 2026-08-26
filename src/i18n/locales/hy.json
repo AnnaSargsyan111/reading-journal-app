@@ -155,6 +155,8 @@
     "removePhoto": "Հեռացնել լուսանկարը",
     "cancel": "Չեղարկել",
     "save": "Պահպանել գիրքը",
+    "saveChanges": "Պահպանել փոփոխությունները",
+    "changesSaved": "Փոփոխությունները պահպանվել են",
     "delete": "Ջնջել",
     "deleteConfirmTitle": "Ջնջե՞լ «{{title}}»",
     "deleteConfirmBody": "Ջնջելու դեպքում գիրքը կհեռացվի ցանկից",

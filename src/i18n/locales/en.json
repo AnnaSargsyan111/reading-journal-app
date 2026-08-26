@@ -155,6 +155,8 @@
     "removePhoto": "Remove photo",
     "cancel": "Cancel",
     "save": "Save Book",
+    "saveChanges": "Save Changes",
+    "changesSaved": "Changes saved",
     "delete": "Delete",
     "deleteConfirmTitle": "Delete \"{{title}}\"?",
     "deleteConfirmBody": "If deleted, the book will be removed from the list",
